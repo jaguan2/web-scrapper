@@ -1,4 +1,4 @@
-// Thin client for the Snag API. All calls are same-origin (Vite proxies /api
+// Thin client for the Media Scraper API. All calls are same-origin (Vite proxies /api
 // to the Express server in dev).
 
 async function jsonOrThrow(resp, fallbackMsg) {

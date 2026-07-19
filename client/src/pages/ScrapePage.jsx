@@ -1,22 +1,14 @@
-import { Box, Paper, Typography } from '@mui/material'
-import { keyframes } from '@mui/system'
+import { Box, Paper, Typography, CircularProgress } from '@mui/material'
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded'
 import { LinkInput } from '../components/scrape/LinkInput'
 import { VideoCard } from '../components/scrape/VideoCard'
 import { GalleryCard } from '../components/scrape/GalleryCard'
-import { PuffyStar } from '../components/decor/PuffyStar'
-import { stickerSwatches } from '../theme/palette'
-
-const bounce = keyframes`
-  0%, 100% { transform: translateY(0) rotate(-8deg); }
-  50%      { transform: translateY(-10px) rotate(8deg); }
-`
 
 const PLATFORM_LABEL = {
-  youtube: { text: 'youtube', sticker: 'peach' },
-  instagram: { text: 'instagram', sticker: 'pink' },
-  twitter: { text: 'x / twitter', sticker: 'blue' },
-  other: { text: 'link', sticker: 'mint' },
+  youtube: 'YouTube',
+  instagram: 'Instagram',
+  twitter: 'X',
+  other: 'Link',
 }
 
 /**
@@ -31,60 +23,60 @@ export function ScrapePage({ state, onFetch }) {
   const badge = PLATFORM_LABEL[data?.platform] ?? PLATFORM_LABEL.other
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, py: { xs: 3, md: 5 } }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, py: { xs: 5, md: 8 } }}>
       {/* Hero */}
-      <Box sx={{ textAlign: 'center', mt: { xs: 1, md: 3 } }}>
-        <Typography component="h1" sx={{ fontSize: { xs: 34, md: 48 }, fontWeight: 700, lineHeight: 1.15 }}>
-          Snag the internet’s
-          <Box component="span" sx={{ color: 'primary.main' }}> good stuff</Box>
+      <Box sx={{ maxWidth: 720 }}>
+        <Typography
+          component="h1"
+          sx={{ fontSize: { xs: 40, md: 60 }, fontWeight: 600, lineHeight: 1.05, letterSpacing: '-1.5px' }}
+        >
+          Paste a link,
+          <br />
+          keep the
+          <Box component="span" sx={{ color: 'secondary.main' }}> media.</Box>
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontWeight: 500, fontSize: { xs: 15, md: 17 }, mt: 1 }}>
-          An ad-free media grabber. No popups, no countdown timers, no “premium”.
+        <Typography sx={{ color: 'text.secondary', fontSize: { xs: 16, md: 19 }, mt: 2.5, maxWidth: 560 }}>
+          An ad-free grabber for YouTube, Instagram, and X. Videos as MP4 or MP3, photos as
+          JPG or PNG. No popups, no countdown timers, no “premium”.
         </Typography>
       </Box>
 
       <LinkInput onSubmit={onFetch} busy={status === 'loading'} />
 
       {status === 'loading' && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5, py: 3 }}>
-          <Box sx={{ animation: `${bounce} 1.1s ease-in-out infinite`, '@media (prefers-reduced-motion: reduce)': { animation: 'none' } }}>
-            <PuffyStar color={stickerSwatches.pink.light} size={64} />
-          </Box>
-          <Typography sx={{ color: 'text.secondary', fontWeight: 600 }}>
-            reading that link…
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: 2 }}>
+          <CircularProgress size={20} thickness={5} sx={{ color: 'secondary.main' }} />
+          <Typography sx={{ color: 'text.secondary', fontSize: 15 }}>
+            Reading that link…
           </Typography>
         </Box>
       )}
 
       {status === 'error' && (
-        <Paper sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <ErrorOutlineRoundedIcon sx={{ color: 'error.main' }} />
-          <Typography sx={{ fontWeight: 600 }}>{error}</Typography>
+        <Paper sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 1.5, borderColor: 'secondary.main' }}>
+          <ErrorOutlineRoundedIcon sx={{ color: 'secondary.main' }} />
+          <Typography sx={{ fontWeight: 500, fontSize: 14.5 }}>{error}</Typography>
         </Paper>
       )}
 
       {status === 'done' && data && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-          {/* Result header: platform sticker + post title */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+          {/* Result header: platform + post title */}
+          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, flexWrap: 'wrap' }}>
             <Typography
               component="span"
-              sx={(theme) => ({
-                px: 1.5,
-                py: 0.25,
-                borderRadius: 999,
-                fontSize: 14,
-                fontWeight: 700,
-                bgcolor: theme.snag.stickers[badge.sticker],
-                border: `2px solid ${theme.snag.sticker.peel}`,
-                boxShadow: theme.snag.sticker.shadow,
-                transform: 'rotate(-1.5deg)',
-              })}
+              sx={{
+                fontSize: 12,
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                color: 'secondary.main',
+              }}
             >
-              {badge.text}
+              {badge}
             </Typography>
             {(data.title || data.uploader) && (
-              <Typography sx={{ fontWeight: 600, color: 'text.secondary', fontSize: 14.5 }}>
+              <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
                 {[data.uploader, data.title].filter(Boolean).join(' · ').slice(0, 120)}
               </Typography>
             )}

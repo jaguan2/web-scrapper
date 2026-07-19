@@ -1,7 +1,6 @@
-/* Minimal global reset. All theming/colors live in the MUI theme so the
-   light/dark toggle stays the single source of truth. */
+/* Minimal global reset. All theming/colors live in the MUI theme. */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -19,14 +18,10 @@ body,
   min-height: 100dvh;
 }
 
-/* Reserve room for the vertical scrollbar so toggling scroll state never
-   shifts the centered content sideways. */
 html {
   scrollbar-gutter: stable;
 }
 
-/* Decorative stars can extend past the right edge; never let them create a
-   horizontal scrollbar. `clip` keeps sticky positioning working. */
 body {
   overflow-x: clip;
   max-width: 100%;

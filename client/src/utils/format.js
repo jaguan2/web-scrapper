@@ -17,7 +17,7 @@ export function formatDuration(seconds) {
 }
 
 /** Filesystem-safe filename base derived from a post title. */
-export function safeName(title, fallback = 'snag') {
+export function safeName(title, fallback = 'media') {
   const base = (title ?? '')
     .replace(/[/\\:*?"<>|#%&{}$!'@+`=]/g, '')
     .replace(/\s+/g, ' ')

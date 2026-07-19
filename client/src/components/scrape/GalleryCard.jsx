@@ -4,8 +4,8 @@ import { alpha } from '@mui/material/styles'
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import FolderZipRoundedIcon from '@mui/icons-material/FolderZipRounded'
-import { StickerButton } from '../common/StickerButton'
-import { StickerToggle } from '../common/StickerToggle'
+import { Button } from '../common/Button'
+import { SegmentedControl } from '../common/SegmentedControl'
 import { imageDownloadUrl } from '../../utils/api'
 import { downloadUrl, downloadZip } from '../../utils/download'
 import { safeName } from '../../utils/format'
@@ -54,44 +54,35 @@ export function GalleryCard({ images, title, platform }) {
   const single = images.length === 1
 
   return (
-    <Paper sx={{ p: { xs: 2, md: 2.5 } }}>
+    <Paper sx={{ p: { xs: 2.5, md: 3 } }}>
       {/* Toolbar */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1.5,
-          flexWrap: 'wrap',
-          mb: 2,
-        }}
-      >
-        <Typography sx={{ fontWeight: 700, fontSize: 17, mr: 'auto' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', mb: 2.5 }}>
+        <Typography sx={{ fontWeight: 600, fontSize: 15, mr: 'auto' }}>
           {single ? '1 photo' : `${images.length} photos`}
           {selected.size > 0 && (
-            <Typography component="span" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: 14, ml: 1 }}>
+            <Typography component="span" sx={{ color: 'text.secondary', fontWeight: 400, fontSize: 13, ml: 1 }}>
               · {selected.size} selected
             </Typography>
           )}
         </Typography>
 
-        <StickerToggle
+        <SegmentedControl
           ariaLabel="Image format"
           size="small"
           value={fmt}
           onChange={setFmt}
           options={[
-            { value: 'jpg', label: 'JPG', sticker: 'lemon' },
-            { value: 'png', label: 'PNG', sticker: 'lilac' },
+            { value: 'jpg', label: 'JPG' },
+            { value: 'png', label: 'PNG' },
           ]}
-          sx={{ p: 0 }}
         />
 
         {!single && (
           <>
             {selected.size > 0 && (
-              <StickerButton
+              <Button
                 size="small"
-                sticker="mint"
+                variant="outline"
                 disabled={zipping}
                 onClick={() =>
                   selected.size === 1
@@ -103,44 +94,42 @@ export function GalleryCard({ images, title, platform }) {
                       )
                     : zipMany([...selected].sort((a, b) => a - b))
                 }
-                startIcon={<DownloadRoundedIcon sx={{ fontSize: 18 }} />}
+                startIcon={<DownloadRoundedIcon sx={{ fontSize: 16 }} />}
               >
-                download selected
-              </StickerButton>
+                Download selected
+              </Button>
             )}
-            <StickerButton
+            <Button
               size="small"
-              sticker="blue"
               disabled={zipping}
               onClick={() => zipMany(images.map((_, i) => i))}
               startIcon={
                 zipping ? (
-                  <CircularProgress size={16} thickness={5} sx={{ color: 'text.primary' }} />
+                  <CircularProgress size={14} thickness={5} sx={{ color: 'inherit' }} />
                 ) : (
-                  <FolderZipRoundedIcon sx={{ fontSize: 18 }} />
+                  <FolderZipRoundedIcon sx={{ fontSize: 16 }} />
                 )
               }
             >
-              {zipping ? 'zipping…' : 'download all (.zip)'}
-            </StickerButton>
+              {zipping ? 'Zipping…' : 'Download all (.zip)'}
+            </Button>
           </>
         )}
         {single && (
-          <StickerButton
+          <Button
             size="small"
-            sticker="mint"
             onClick={() =>
               downloadUrl(imageDownloadUrl(images[0].src, { format: fmt, filename: nameFor(0) }))
             }
-            startIcon={<DownloadRoundedIcon sx={{ fontSize: 18 }} />}
+            startIcon={<DownloadRoundedIcon sx={{ fontSize: 16 }} />}
           >
-            download {fmt}
-          </StickerButton>
+            Download {fmt.toUpperCase()}
+          </Button>
         )}
       </Box>
 
       {error && (
-        <Typography sx={{ color: 'error.main', fontWeight: 600, fontSize: 13.5, mb: 1.5 }}>
+        <Typography sx={{ color: 'secondary.main', fontWeight: 500, fontSize: 13, mb: 2 }}>
           {error}
         </Typography>
       )}
@@ -150,7 +139,7 @@ export function GalleryCard({ images, title, platform }) {
         sx={{
           display: 'grid',
           gridTemplateColumns: single
-            ? 'minmax(0, 420px)'
+            ? 'minmax(0, 440px)'
             : { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
           justifyContent: single ? 'center' : 'start',
           gap: 1.5,
@@ -163,11 +152,10 @@ export function GalleryCard({ images, title, platform }) {
               key={i}
               sx={(theme) => ({
                 position: 'relative',
-                borderRadius: `${theme.snag.radius - 8}px`,
+                borderRadius: `${theme.app.radius}px`,
                 overflow: 'hidden',
-                border: `3px solid ${isSelected ? theme.palette.primary.main : theme.snag.sticker.peel}`,
-                boxShadow: isSelected ? theme.snag.sticker.shadowHover : theme.snag.sticker.shadow,
-                transition: 'border-color 160ms ease, box-shadow 160ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                border: `2px solid ${isSelected ? theme.app.accent : theme.app.border}`,
+                transition: 'border-color 160ms ease, transform 200ms ease',
                 '@media (hover: hover)': {
                   '&:hover': { transform: 'translateY(-3px)' },
                   '&:hover .tile-actions': { opacity: 1 },
@@ -199,23 +187,16 @@ export function GalleryCard({ images, title, platform }) {
                     position: 'absolute',
                     top: 8,
                     right: 8,
-                    width: 30,
-                    height: 30,
+                    width: 28,
+                    height: 28,
                     borderRadius: '50%',
-                    bgcolor: isSelected
-                      ? theme.palette.primary.main
-                      : alpha(theme.palette.background.paper, 0.85),
-                    border: `2px solid ${theme.snag.sticker.peel}`,
-                    boxShadow: theme.snag.sticker.shadow,
+                    bgcolor: isSelected ? theme.app.accent : alpha('#ffffff', 0.9),
+                    border: `1px solid ${isSelected ? theme.app.accent : theme.app.border}`,
                     transition: 'background-color 160ms ease, transform 160ms ease',
                     '&:hover': { transform: 'scale(1.1)' },
                   })}
                 >
-                  {isSelected && (
-                    <CheckRoundedIcon
-                      sx={{ fontSize: 20, color: (t) => t.palette.getContrastText(t.palette.primary.main) }}
-                    />
-                  )}
+                  {isSelected && <CheckRoundedIcon sx={{ fontSize: 18, color: '#fff' }} />}
                 </ButtonBase>
               )}
 
@@ -230,7 +211,7 @@ export function GalleryCard({ images, title, platform }) {
                   p: 1,
                   display: 'flex',
                   justifyContent: 'flex-end',
-                  background: 'linear-gradient(0deg, rgba(0,0,0,0.45), transparent)',
+                  background: 'linear-gradient(0deg, rgba(30,30,36,0.5), transparent)',
                   opacity: { xs: 1, md: single ? 1 : 0 },
                   transition: 'opacity 180ms ease',
                 }}
@@ -241,17 +222,16 @@ export function GalleryCard({ images, title, platform }) {
                   }
                   aria-label={`Download photo ${i + 1} as ${fmt.toUpperCase()}`}
                   sx={(theme) => ({
-                    width: 34,
-                    height: 34,
+                    width: 32,
+                    height: 32,
                     borderRadius: '50%',
-                    bgcolor: alpha(theme.palette.background.paper, 0.9),
-                    border: `2px solid ${theme.snag.sticker.peel}`,
-                    boxShadow: theme.snag.sticker.shadow,
+                    bgcolor: alpha('#ffffff', 0.95),
+                    border: `1px solid ${theme.app.border}`,
                     transition: 'transform 160ms ease',
                     '&:hover': { transform: 'scale(1.1)' },
                   })}
                 >
-                  <DownloadRoundedIcon sx={{ fontSize: 19, color: 'text.primary' }} />
+                  <DownloadRoundedIcon sx={{ fontSize: 17, color: 'text.primary' }} />
                 </ButtonBase>
               </Box>
             </Box>

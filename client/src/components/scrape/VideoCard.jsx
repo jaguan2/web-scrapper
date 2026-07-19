@@ -3,15 +3,11 @@ import { Box, Paper, Typography, LinearProgress, Stack } from '@mui/material'
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded'
 import MovieRoundedIcon from '@mui/icons-material/MovieRounded'
 import MusicNoteRoundedIcon from '@mui/icons-material/MusicNoteRounded'
-import { StickerButton } from '../common/StickerButton'
-import { StickerToggle } from '../common/StickerToggle'
+import { Button } from '../common/Button'
+import { SegmentedControl } from '../common/SegmentedControl'
 import { startJob, getJob, jobFileUrl, mediaProxyUrl } from '../../utils/api'
 import { downloadUrl } from '../../utils/download'
 import { formatBytes, formatDuration, safeName } from '../../utils/format'
-
-// Rotate quality chips through the pastel palette so the ladder reads as a
-// row of placed stickers.
-const QUALITY_STICKERS = ['peach', 'blue', 'mint', 'lemon', 'lilac', 'pink']
 
 /**
  * One downloadable video: thumbnail + metadata, MP4/MP3 toggle, a quality
@@ -84,30 +80,27 @@ export function VideoCard({ item }) {
     }
   }
 
-  const qualityOptions = (item.qualities ?? []).map((q, i) => ({
+  const qualityOptions = (item.qualities ?? []).map((q) => ({
     value: q.height,
-    label: q.fps ? `${q.label}${q.fps}` : q.label,
+    label: q.fps ? `${q.label} ${q.fps}fps` : q.label,
     sub: formatBytes(q.filesize) ?? undefined,
-    sticker: QUALITY_STICKERS[i % QUALITY_STICKERS.length],
   }))
 
   return (
-    <Paper sx={{ p: { xs: 2, md: 2.5 } }}>
-      <Box sx={{ display: 'flex', gap: 2.5, flexDirection: { xs: 'column', sm: 'row' } }}>
+    <Paper sx={{ p: { xs: 2.5, md: 3 } }}>
+      <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', sm: 'row' } }}>
         {item.thumbnail && (
-          <Box sx={{ position: 'relative', flexShrink: 0, alignSelf: { xs: 'center', sm: 'start' } }}>
+          <Box sx={{ position: 'relative', flexShrink: 0, alignSelf: { xs: 'stretch', sm: 'start' } }}>
             <Box
               component="img"
               src={item.thumbnail}
               alt=""
               sx={(theme) => ({
-                width: { xs: '100%', sm: 220 },
-                maxWidth: 320,
+                width: { xs: '100%', sm: 240 },
                 aspectRatio: '16 / 9',
                 objectFit: 'cover',
-                borderRadius: `${theme.snag.radius - 8}px`,
-                border: `3px solid ${theme.snag.sticker.peel}`,
-                boxShadow: theme.snag.sticker.shadow,
+                borderRadius: `${theme.app.radius}px`,
+                border: `1px solid ${theme.app.border}`,
                 display: 'block',
               })}
             />
@@ -115,14 +108,14 @@ export function VideoCard({ item }) {
               <Typography
                 sx={{
                   position: 'absolute',
-                  right: 10,
-                  bottom: 10,
-                  px: 1,
-                  py: 0.1,
-                  borderRadius: 999,
-                  fontSize: 12.5,
-                  fontWeight: 700,
-                  bgcolor: 'rgba(0,0,0,0.65)',
+                  right: 8,
+                  bottom: 8,
+                  px: 0.85,
+                  py: 0.15,
+                  borderRadius: 1,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  bgcolor: 'rgba(30,30,36,0.85)',
                   color: '#fff',
                 }}
               >
@@ -132,14 +125,14 @@ export function VideoCard({ item }) {
           </Box>
         )}
 
-        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1.75 }}>
           <Box>
             {item.title && (
               <Typography
                 sx={{
-                  fontWeight: 700,
-                  fontSize: 17,
-                  lineHeight: 1.3,
+                  fontWeight: 600,
+                  fontSize: 16,
+                  lineHeight: 1.35,
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
@@ -150,63 +143,70 @@ export function VideoCard({ item }) {
               </Typography>
             )}
             {item.uploader && (
-              <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: 13.5 }}>
+              <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 0.25 }}>
                 {item.uploader}
               </Typography>
             )}
           </Box>
 
-          <StickerToggle
-            ariaLabel="Output format"
-            size="small"
-            value={container}
-            onChange={setContainer}
-            options={[
-              {
-                value: 'mp4',
-                label: 'MP4 video',
-                sticker: 'blue',
-                icon: <MovieRoundedIcon sx={{ fontSize: 17 }} />,
-              },
-              ...(item.canMp3
-                ? [
-                    {
-                      value: 'mp3',
-                      label: 'MP3 audio',
-                      sticker: 'pink',
-                      icon: <MusicNoteRoundedIcon sx={{ fontSize: 17 }} />,
-                    },
-                  ]
-                : []),
-            ]}
-            sx={{ p: 0 }}
-          />
+          {!isDirect && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Format
+              </Typography>
+              <SegmentedControl
+                ariaLabel="Output format"
+                size="small"
+                value={container}
+                onChange={setContainer}
+                options={[
+                  {
+                    value: 'mp4',
+                    label: 'MP4 video',
+                    icon: <MovieRoundedIcon sx={{ fontSize: 16 }} />,
+                  },
+                  ...(item.canMp3
+                    ? [
+                        {
+                          value: 'mp3',
+                          label: 'MP3 audio',
+                          icon: <MusicNoteRoundedIcon sx={{ fontSize: 16 }} />,
+                        },
+                      ]
+                    : []),
+                ]}
+              />
+            </Box>
+          )}
 
-          {container === 'mp4' && qualityOptions.length > 0 && (
-            <StickerToggle
-              ariaLabel="Video quality"
-              size="small"
-              value={height}
-              onChange={setHeight}
-              options={qualityOptions}
-              sx={{ p: 0 }}
-            />
+          {!isDirect && container === 'mp4' && qualityOptions.length > 0 && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Quality
+              </Typography>
+              <SegmentedControl
+                ariaLabel="Video quality"
+                size="small"
+                value={height}
+                onChange={setHeight}
+                options={qualityOptions}
+              />
+            </Box>
           )}
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', mt: 0.5 }}>
-            <StickerButton
-              sticker="mint"
+            <Button
               onClick={download}
-              disabled={busy || (container === 'mp4' && qualityOptions.length > 0 && !height)}
-              startIcon={<DownloadRoundedIcon sx={{ fontSize: 20 }} />}
+              disabled={busy || (!isDirect && container === 'mp4' && qualityOptions.length > 0 && !height)}
+              startIcon={<DownloadRoundedIcon sx={{ fontSize: 18 }} />}
             >
-              {busy ? 'snagging…' : `download ${container}`}
-            </StickerButton>
+              {busy ? 'Grabbing…' : isDirect ? 'Download video' : `Download ${container.toUpperCase()}`}
+            </Button>
 
             {busy && (
-              <Stack sx={{ flex: 1, minWidth: 180, gap: 0.5 }}>
+              <Stack sx={{ flex: 1, minWidth: 180, gap: 0.75 }}>
                 <LinearProgress variant="determinate" value={job.progress ?? 0} />
-                <Typography sx={{ fontSize: 12.5, fontWeight: 600, color: 'text.secondary' }}>
+                <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
                   {job.phase} · {job.progress ?? 0}%
                 </Typography>
               </Stack>
@@ -214,7 +214,7 @@ export function VideoCard({ item }) {
           </Box>
 
           {error && (
-            <Typography sx={{ color: 'error.main', fontWeight: 600, fontSize: 13.5 }}>
+            <Typography sx={{ color: 'secondary.main', fontWeight: 500, fontSize: 13 }}>
               {error}
             </Typography>
           )}

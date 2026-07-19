@@ -12,7 +12,7 @@ import { ytdlpExec, ffmpegPath, friendlyYtdlpError } from './ytdlp.js'
 // System temp, NOT inside the repo: the project lives in a OneDrive-synced
 // folder, and OneDrive locks mid-sync files (EPERM on cleanup) and would
 // upload every downloaded video.
-const TMP_ROOT = path.join(os.tmpdir(), 'snag-jobs')
+const TMP_ROOT = path.join(os.tmpdir(), 'media-scraper-jobs')
 
 const MEDIA_EXTS = new Set(['.mp4', '.mkv', '.webm', '.mp3', '.m4a'])
 const STALE_MS = 60 * 60 * 1000 // reclaim undownloaded jobs after an hour

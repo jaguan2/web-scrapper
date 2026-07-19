@@ -26,7 +26,7 @@ export function downloadUrl(url) {
  * Bundle multiple { blob, filename } items into a single ZIP and download it.
  * Level 0 (store): jpg/png payloads are already compressed.
  */
-export async function downloadZip(items, zipName = 'snag.zip') {
+export async function downloadZip(items, zipName = 'media.zip') {
   const entries = {}
   for (const { blob, filename } of items) {
     const buf = new Uint8Array(await blob.arrayBuffer())

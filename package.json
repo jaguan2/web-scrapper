@@ -1,8 +1,8 @@
 {
-  "name": "snag",
+  "name": "media-scraper",
   "private": true,
   "version": "0.1.0",
-  "description": "Snag — paste a link, keep the media. Ad-free scraper for YouTube, Instagram, and X.",
+  "description": "Media Scraper — paste a link, keep the media. Ad-free scraper for YouTube, Instagram, and X.",
   "workspaces": [
     "client",
     "server"

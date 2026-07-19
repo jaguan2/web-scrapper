@@ -69,5 +69,5 @@ setInterval(cleanupStaleJobs, 10 * 60 * 1000)
 cleanupStaleJobs()
 
 app.listen(PORT, () => {
-  console.log(`Snag API listening on http://localhost:${PORT}`)
+  console.log(`Media Scraper API listening on http://localhost:${PORT}`)
 })
