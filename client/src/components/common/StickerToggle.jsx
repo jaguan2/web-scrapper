@@ -1,0 +1,89 @@
+import { Box, ButtonBase, Typography } from '@mui/material'
+
+const SPRING = 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+
+/**
+ * A segmented control in the sticker style: each option is a pastel pill with
+ * a die-cut peel border and soft shadow. The selected option is fully inked
+ * and lifted; unselected options sit flat and muted.
+ *
+ * `options`: [{ value, label, sub?, sticker?, icon? }] — `sub` renders a small
+ * secondary line (e.g. a filesize under a quality label).
+ */
+export function StickerToggle({ options, value, onChange, size = 'medium', sx, ariaLabel }) {
+  const pad =
+    size === 'small' ? { px: 1.5, py: 0.5, fontSize: 13.5 } : { px: 2, py: 0.75, fontSize: 15 }
+  return (
+    <Box
+      role="group"
+      aria-label={ariaLabel}
+      sx={{
+        display: 'inline-flex',
+        flexWrap: 'wrap',
+        gap: 1,
+        p: 0.5,
+        borderRadius: 999,
+        ...sx,
+      }}
+    >
+      {options.map((opt) => {
+        const selected = opt.value === value
+        return (
+          <ButtonBase
+            key={opt.value}
+            onClick={() => onChange?.(opt.value)}
+            aria-pressed={selected}
+            aria-label={opt.label}
+            sx={(theme) => {
+              const s = theme.snag.sticker
+              const swatch = theme.snag.stickers[opt.sticker ?? 'blue']
+              return {
+                display: 'inline-flex',
+                flexDirection: opt.sub ? 'column' : 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: opt.sub ? 0 : 0.6,
+                borderRadius: opt.sub ? 4 : 999,
+                fontWeight: 700,
+                lineHeight: 1.25,
+                color: 'text.primary',
+                ...pad,
+                bgcolor: selected ? swatch : 'transparent',
+                border: `2px solid ${selected ? s.peel : theme.palette.divider}`,
+                boxShadow: selected ? s.shadow : 'none',
+                opacity: selected ? 1 : 0.7,
+                transform: selected ? 'translateY(-1px)' : 'none',
+                transition: `transform 200ms ${SPRING}, box-shadow 200ms ease, background-color 200ms ease, opacity 160ms ease`,
+                '@media (hover: hover)': {
+                  '&:hover': {
+                    opacity: 1,
+                    transform: selected ? 'translateY(-2px)' : 'translateY(-1px)',
+                    boxShadow: selected ? s.shadowHover : 'none',
+                    bgcolor: selected ? swatch : 'action.hover',
+                  },
+                },
+                '&:active': { transform: 'translateY(0) scale(0.97)' },
+                '&:focus-visible': {
+                  outline: 'none',
+                  boxShadow: `0 0 0 3px ${theme.palette.primary.main}`,
+                },
+                '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+              }
+            }}
+          >
+            {opt.icon}
+            {opt.label}
+            {opt.sub && (
+              <Typography
+                component="span"
+                sx={{ fontSize: 11, fontWeight: 600, opacity: 0.75, lineHeight: 1.2 }}
+              >
+                {opt.sub}
+              </Typography>
+            )}
+          </ButtonBase>
+        )
+      })}
+    </Box>
+  )
+}

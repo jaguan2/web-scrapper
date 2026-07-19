@@ -1,0 +1,19 @@
+{
+  "name": "snag",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Snag — paste a link, keep the media. Ad-free scraper for YouTube, Instagram, and X.",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "lint": "npm run lint -w client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

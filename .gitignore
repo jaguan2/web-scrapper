@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.log
+
+# yt-dlp session cookies (never commit credentials)
+server/cookies.txt
