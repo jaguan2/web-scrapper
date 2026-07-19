@@ -8,7 +8,11 @@
 
 <img src="docs/home.png" alt="Media Scraper home — paste a link, keep the media" width="85%" />
 
+<br /><br />
+
 <img src="docs/video-result.png" alt="Media Scraper video result — quality ladder and MP4/MP3 download" width="85%" />
+
+<br /><br />
 
 <img src="docs/gallery-result.png" alt="Media Scraper photo result — selectable gallery with JPG/PNG and bulk ZIP" width="85%" />
 
